@@ -1,0 +1,73 @@
+---
+TRY_TIME: "EKnet_classification"
+DRAW_EPOCHS: 30 #number of epoch drawing train/val pred
+DRAW_EPOCHS_imgs: 10 #number of drawing img  when DRAW_EPOCHS
+
+DATASET:
+  TRAIN_CSV: "dataset/PTB_XL_data/k0_train.csv"
+  VAL_CSV: "dataset/PTB_XL_data/k0_val.csv"
+  STATS_CSV: "dataset/PTB_XL_data/k0_distribution.csv"
+  DATA_DIR: "dataset/PTB_XL_data/PTB_orginal_jsonzip_ecgzip/"
+  MODEL_SAVE_DIR: "model_outputs/"
+  
+DATASET_CUSTOME:
+  INPUT_LENGTH: 1250
+  # LEADS:  ['I','I I','III','aVR','aVL','aVF','V1','V2','V3','V4','V5','V6','II_1','II_2','II_3','II_4']
+  LEADS:  ['I','II_1','II_2','II_3','II_4','III','aVR','aVL','aVF','V1','V2','V3','V4','V5','V6']
+  INPUT_LEADS: 15
+  PATCH_SIZE: 25
+  MASK_RATIO: 0.65
+  NORMLIZE_SINGAL: False
+  Depress_v1_v6: False
+  PTB_random_pos_loc: True
+  Pertrain_Path: "./.../model_epoch_299_val_0.002576.pth"
+  Using_Pertrain: False
+
+# Classes ---
+OPTIM:
+  BATCH_SIZE: 200
+  NUM_EPOCHS: 120
+  # NEPOCH_DECAY: [10]
+  LR_INITIAL: 0.00025  #1.5e-4 0.00015
+  LR_MIN: 0.000001
+  # LOSS: 'dice_loss' # dice_loss, cross_entropy, combine 
+  weight_decay: 0.05
+    
+
+
+MODEL:
+  MODE: 'EPKnet'
+  
+  embedding_1d_2d: '2d'
+  
+  embed_dim: 256
+  local_depth: 9
+  num_head: 8
+  
+  add_pos_before_cross: False
+  cls_cross_depth: 3
+
+  pred_full_II_lead: True
+
+  normalize_before: False
+  mode_stage: 'classfier' #self_learning  classfier
+  num_classes: 70
+
+  pufication_module: 'none' # none token_purification_M token_purification
+  pufication_ratio: 0.5
+  pure_ways: 'atten' #'atten','random','combine'
+
+  classfierer_type: 'cls_embeeing_seperate' #for train fc cls_embeeing_seperate
+
+  lead_split: True # True False
+  fast_pufication: 'random_mask' # random_mask score_embedding
+  fast_pufication_head: 8
+  fast_pure_ways: 'atten' #'atten','random','combine'
+  Token_Purification_M_head: 8
+
+  pos_emb_style: 'orginal'  #orginal, lead_emb, time_emb, lead_time_emb
+  pos_emb_source: '12' #12 15
+  lead_embedding_trainable: False
+
+  time_emb_source: 'orginal' #  orginal scartch time_emb random 12lead_same
+
